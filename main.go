@@ -2,24 +2,19 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
+	"io/ioutil"
+	"net/http"
 )
 
 func main() {
-
-	// 日志
-	//gin.DisableConsoleColor()
-	//f, _ := os.Create("gin.log")
-	//gin.DefaultWriter = io.MultiWriter(f)
-
-	log.Println("====日志===")
-
+	resp, _ := http.Get("http://myexternalip.com/raw")
+	defer resp.Body.Close()
+	content, _ := ioutil.ReadAll(resp.Body)
 	r := gin.Default()
-	gin.Logger()
-	r.GET("/ping", func(c *gin.Context) {
+	r.GET("/addr", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "pong",
+			"addr": string(content),
 		})
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.Run(":8081")
 }
