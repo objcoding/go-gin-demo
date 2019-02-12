@@ -16,7 +16,7 @@ pipeline {
 
         stage('编译代码') {
             steps {
-                sh "mvn -U -am clean package -DskipTests"
+                sh "go install"
             }
             post {
                 failure {
