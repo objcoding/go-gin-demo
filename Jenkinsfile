@@ -8,11 +8,6 @@ pipeline {
     }
     stages {
         stage('获取代码') {
-            when {
-                anyOf {
-                    branch 'master'
-                }
-            }
             steps {
                 deleteDir()
                 git([url: "${GIT_REPO}", branch: "master"])
@@ -20,11 +15,6 @@ pipeline {
         }
 
         stage('编译代码') {
-            when {
-                anyOf {
-                   branch 'master'
-                }
-            }
             steps {
                 sh "mvn -U -am clean package -DskipTests"
             }
@@ -40,11 +30,6 @@ pipeline {
         }
 
         stage('构建镜像') {
-            when {
-                anyOf {
-                    branch 'master'
-                }
-            }
             steps {
                 sh "sh ${BUILD_IMAGE_SCRIPT_PATH} master"
             }
