@@ -10,21 +10,19 @@ pipeline {
         stage('获取代码') {
             when {
                 anyOf {
-                    branch 'sit'
-                    branch 'qa'
+                    branch 'master'
                 }
             }
             steps {
                 deleteDir()
-                git([url: "${GIT_REPO}", branch: "${BRANCH_NAME}"])
+                git([url: "${GIT_REPO}", branch: "master"])
             }
         }
 
         stage('编译代码') {
             when {
                 anyOf {
-                    branch 'sit'
-                    branch 'qa'
+                   branch 'master'
                 }
             }
             steps {
@@ -44,12 +42,11 @@ pipeline {
         stage('构建镜像') {
             when {
                 anyOf {
-                    branch 'sit'
-                    branch 'qa'
+                    branch 'master'
                 }
             }
             steps {
-                sh "sh ${BUILD_IMAGE_SCRIPT_PATH} ${BRANCH_NAME}"
+                sh "sh ${BUILD_IMAGE_SCRIPT_PATH} master"
             }
             post {
                 failure {
@@ -60,27 +57,5 @@ pipeline {
             }
         }
 
-        stage('更新sit服务') {
-            when {
-                anyOf {
-                    branch 'sit'
-                }
-            }
-            steps {
-                sh " '/deploy.sh' ${active} "
-            }
-        }
-
-
-        stage('更新qa服务') {
-            when {
-                anyOf {
-                    branch 'qa'
-                }
-            }
-            steps {
-                sh " '/deploy.sh' ${active} "
-            }
-        }
     }
 }
